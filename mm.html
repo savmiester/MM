@@ -25,6 +25,142 @@
         <link rel="stylesheet" href="css/main-1.6.css">
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+
+	    <link rel="stylesheet" href="css/slideShowStyles.css" />
+
+	    <script type="text/javascript">
+	        var imageCount = 3;
+	        var imageIndex = 1;
+	        var loadList = new Array();
+
+	        function loadImages() {
+	            // preload images. Add these three lines for every image in your slideshow
+
+	            var image1 = new Image();
+	            image1.onLoad = addToLoadList();
+	            image1.src = "img/1.jpg";
+
+	            var image2 = new Image();
+	            image2.onLoad = addToLoadList();
+	            image2.src = "img/2.jpg";
+
+	            var image3 = new Image();
+	            image3.onLoad = addToLoadList();
+	            image3.src = "img/3.jpg";
+
+	            var image4 = new Image();
+	            image4.onLoad = addToLoadList();
+	            image4.src = "img/4.jpg";
+
+
+	        }
+
+	        function addToLoadList() {
+	            loadList[loadList.length] = 1;
+	            var currentCount = loadList.length;
+	            if (currentCount == imageCount) {
+	                loadList.length = 0;
+	            }
+	        }
+
+
+	        function changeImage() {
+	            // get the photo container
+	            var photoContainer = document.getElementById('photo-container');
+
+	            // assign the class of the photo container
+	            photoContainer.setAttribute('class', 'initial');
+
+	            // set the attributes of the current image
+	            var outgoingImage = photoContainer.getElementsByTagName('img')[0];
+	            outgoingImage.setAttribute('class', 'outgoing');
+	            outgoingImage.setAttribute('id', 'outgoing');
+
+	            // create and append a new image to the photo container
+	            // the incoming image
+	            if (imageIndex == imageCount) {
+	                imageIndex = 1;
+	            } else {
+	                imageIndex = imageIndex + 1;
+	            }
+	            var nextImageFilename = "img/" + String(imageIndex) + ".jpg";
+	            var incomingImage = new Image();
+	            incomingImage.src = nextImageFilename;
+	            // assign attributes
+	            incomingImage.setAttribute('class', 'incoming');
+	            incomingImage.setAttribute('id', 'incoming');
+	            // attach event listener to new image so when the transition is done the cleanup handler is called
+	            incomingImage.addEventListener('webkitTransitionEnd', transitionDone, false);
+	            // insert the incoming image into the photo container
+	            photoContainer.appendChild(incomingImage);
+
+	            // kick off the transition by changing the class of the photo container
+	            window.setTimeout(function () {
+	                photoContainer.setAttribute('class', 'final');
+	            }, 0);
+	        }
+
+	        function changeImageFromThumbnail(id) {
+	            // get the photo container
+	            var photoContainer = document.getElementById('photo-container');
+
+
+	            // assign the class of the photo container
+	            photoContainer.setAttribute('class', 'initial');
+
+	            // set the attributes of the current image
+	            var outgoingImage = photoContainer.getElementsByTagName('img')[0];
+	            outgoingImage.setAttribute('class', 'outgoing');
+	            outgoingImage.setAttribute('id', 'outgoing');
+
+	            // create and append a new image to the photo container
+	            // the incoming image
+	            if (imageIndex == imageCount) {
+	                imageIndex = 1;
+	            } else {
+	                imageIndex = imageIndex + 1;
+	            }
+	            var nextImageFilename = "img/" + id + ".jpg";
+	            var incomingImage = new Image();
+	            incomingImage.src = nextImageFilename;
+	            // assign attributes
+	            incomingImage.setAttribute('class', 'incoming');
+	            incomingImage.setAttribute('id', 'incoming');
+	            // attach event listener to new image so when the transition is done the cleanup handler is called
+	            incomingImage.addEventListener('webkitTransitionEnd', transitionDone, false);
+	            // insert the incoming image into the photo container
+	            photoContainer.appendChild(incomingImage);
+
+	            // kick off the transition by changing the class of the photo container
+	            window.setTimeout(function () {
+	                photoContainer.setAttribute('class', 'final');
+	            }, 0);
+	        }
+
+
+	        function transitionDone(event) {
+	            // remove the outgoing content container
+	            var outgoingImage = document.getElementById('outgoing');
+	            try {
+	                outgoingImage.parentNode.removeChild(outgoingImage);
+	            } catch (err) { }
+
+	            // set the class of the photo container back to default
+	            var photoContainer = document.getElementById('photo-container');
+	            photoContainer.removeAttribute('class');
+
+	            // remove the class and id attributes from the child container
+	            setTimeout(function () {
+	                var incomingImage = photoContainer.getElementsByTagName('img')[0];
+	                incomingImage.removeAttribute('class');
+	                incomingImage.removeAttribute('id');
+	            }, 0);
+	        }
+
+
+        </script>
+
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -45,7 +181,7 @@
                             <li><a href="#wedding">WEDDING</a></li>
                             <li><a href="#accomodations">ACCOMODATIONS</a></li>
                             <li><a href="#registry">REGISTRY</a></li>
-                            <li><a href="#" target="_blank">MEMORIES</a></li>
+                            <li><a href="#memories" target="_blank">MEMORIES</a></li>
                         </ul>
 
                     </nav>
@@ -290,6 +426,59 @@
                         </div><!--end column-->
                
                     </section>
+
+
+                    <section id="memories" class="clearfix">
+                        <h1>Memories</h1>
+                        <section id="slideshow">
+		                    <a class="commands prev commands1" title="Go to next slide" onclick="changeImage();">&lt;</a>
+		                    <a class="commands next commands1" title="Go to previous slide" onclick="changeImage();">&gt;</a>
+
+		                    <a class="play_commands pause" title="Maintain paused">Pause</a>
+		                    <a class="play_commands play" title="Play the animation">Play</a>
+
+                            <div class="photo-container" id="photo-container"><img src="img/1.jpg"></div>
+                        </section>
+
+                    <section id="thumbnailContainer">
+                        <div id="stretch">
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                            <div class="content"><img src="img/1.jpg" onclick="changeImageFromThumbnail('1');"></div>
+                            <div class="content"><img src="img/2.jpg" onclick="changeImageFromThumbnail('2');"></div>
+                            <div class="content"><img src="img/3.jpg" onclick="changeImageFromThumbnail('3');"></div>
+                            <div class="content"><img src="img/4.jpg" onclick="changeImageFromThumbnail('4');"></div>
+
+                        </div>
+
+                    </section>
+
+
+                    </section>
+
 
                     <div style="height: 300px"></div>
 
